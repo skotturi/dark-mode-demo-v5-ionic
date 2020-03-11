@@ -1,0 +1,101 @@
+import {ChangeDetectorRef, Component, OnInit } from '@angular/core';
+
+import { Platform } from '@ionic/angular';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss']
+})
+export class AppComponent implements OnInit {
+  public selectedIndex = 0;
+  public appPages = [
+    {
+      title: 'Inbox',
+      url: '/folder/Inbox',
+      icon: 'mail'
+    },
+    {
+      title: 'Outbox',
+      url: '/folder/Outbox',
+      icon: 'paper-plane'
+    },
+    {
+      title: 'Favorites',
+      url: '/folder/Favorites',
+      icon: 'heart'
+    },
+    {
+      title: 'Archived',
+      url: '/folder/Archived',
+      icon: 'archive'
+    },
+    {
+      title: 'Trash',
+      url: '/folder/Trash',
+      icon: 'trash'
+    },
+    {
+      title: 'Spam',
+      url: '/folder/Spam',
+      icon: 'warning'
+    }
+  ];
+  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+
+  darkMode: boolean;
+  constructor(
+    private platform: Platform,
+    private splashScreen: SplashScreen,
+    private statusBar: StatusBar,
+    private ref: ChangeDetectorRef
+  ) {
+    this.initializeApp();
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+    });
+  }
+
+  ngOnInit() {
+    const path = window.location.pathname.split('folder/')[1];
+    if (path !== undefined) {
+      this.selectedIndex = this.appPages.findIndex(
+        page => page.title.toLowerCase() === path.toLowerCase()
+      );
+    }
+
+    const osDarkness = window.matchMedia('(prefers-color-scheme: dark)');
+    // check the initial state
+    this.applyDarkness(osDarkness);
+    // add listener
+    osDarkness.addListener(e => {
+      this.applyDarkness(e);
+    });
+  }
+
+  applyDarkness(matchMediaEvent) {
+    if (matchMediaEvent.matches) {
+      this.darkMode = true;
+      document.body.classList.toggle('dark', true);
+    } else {
+      this.darkMode = false;
+      document.body.classList.toggle('dark', false);
+    }
+    this.ref.detectChanges();
+  }
+
+  toggleDarkness() {
+    // this.darkMode = !this.darkMode;
+    if (this.darkMode) {
+      document.body.classList.toggle('dark', true);
+    } else {
+      document.body.classList.toggle('dark', false);
+    }
+  }
+}
