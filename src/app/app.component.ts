@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -87,6 +87,8 @@ export class AppComponent implements OnInit {
       this.darkMode = false;
       document.body.classList.toggle('dark', false);
     }
+    // this is needed to update the ngModel of the ion-toggle
+    // to avoid the toggle state to become backwards
     this.ref.detectChanges();
   }
 
